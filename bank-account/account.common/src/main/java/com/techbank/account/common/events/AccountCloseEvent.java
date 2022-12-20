@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
 public class AccountCloseEvent extends BaseEvent {
-
+    public AccountCloseEvent(String id) {
+        super(id);
+    }
 }
