@@ -14,7 +14,7 @@ import java.util.Map;
  * Account Mediator ConCreate Class
  */
 @Service
-public class CommandAccountDispatcher implements CommandDispatcher {
+public class AccountCommandDispatcher implements CommandDispatcher {
     private final Map<Class<?extends BaseCommand >, List<CommandHandlerMethod>> routes = new HashMap<>();
 
     @Override
@@ -31,7 +31,7 @@ public class CommandAccountDispatcher implements CommandDispatcher {
         }
         if (handlers.size() > 1)
         {
-            throw new RuntimeException("Cannot send command to one handler!");
+            throw new RuntimeException("Cannot send command to more than one handler!");
         }
         handlers.get(0).handle(command);
     }
