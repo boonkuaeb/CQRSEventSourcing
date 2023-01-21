@@ -1,6 +1,7 @@
 package com.techbank.account.cmd.domain;
 
 import com.techbank.account.cmd.api.commands.OpenAccountCommand;
+import com.techbank.account.common.events.AccountClosedEvent;
 import com.techbank.account.common.events.AccountOpenedEvent;
 import com.techbank.account.common.events.FundsDepositedEvent;
 import com.techbank.account.common.events.FundsWithdrawnEvent;
@@ -13,6 +14,11 @@ import java.util.Date;
 public class AccountAggregate extends AggregateRoot {
     private Boolean active;
     private double balance;
+
+    public double getBalance()
+    {
+        return this.balance;
+    }
 
     public AccountAggregate(OpenAccountCommand command) {
         raiseEvent(AccountOpenedEvent.builder()
@@ -61,6 +67,24 @@ public class AccountAggregate extends AggregateRoot {
     public void apply(FundsWithdrawnEvent event) {
         this.id = event.getId();
         this.balance -= event.getAmount();
+    }
+
+    public void closeAccount()
+    {
+        if (!this.active)
+        {
+            throw new IllegalStateException("The bank account has already been closed!");
+        }
+        raiseEvent(AccountClosedEvent.builder()
+                .id(this.id)
+                .build()
+        );
+    }
+
+    public void apply(AccountClosedEvent event)
+    {
+        this.id = event.getId();
+        this.active=false;
     }
 
 }
